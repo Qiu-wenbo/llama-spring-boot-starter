@@ -1,10 +1,10 @@
-// package com.tal.ollama.ollamaspringbootstarter;
+// package io.github.kabi.llama.llamaspringbootstarter;
 
 // import org.junit.jupiter.api.Test;
 // import org.springframework.boot.test.context.SpringBootTest;
 
 // @SpringBootTest
-// class OllamaSpringBootStarterApplicationTests {
+// class LlamaSpringBootStarterApplicationTests {
 
 //     @Test
 //     void contextLoads() {

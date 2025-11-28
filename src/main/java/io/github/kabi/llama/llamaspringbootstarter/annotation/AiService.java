@@ -1,4 +1,4 @@
-package com.tal.ollama.ollamaspringbootstarter.annotation;
+package io.github.kabi.llama.llamaspringbootstarter.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
