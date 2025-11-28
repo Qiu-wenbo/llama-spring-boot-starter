@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AiMethod {
+public @interface UserMessage {
     
     /**
      * 方法的提示词模板，支持使用{参数名}作为占位符

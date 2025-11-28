@@ -1,19 +1,15 @@
 package io.github.kabi.llama.llamaspringbootstarter.processor;
 
-import io.github.kabi.llama.llamaspringbootstarter.annotation.AiMethod;
+import io.github.kabi.llama.llamaspringbootstarter.annotation.UserMessage;
 import io.github.kabi.llama.llamaspringbootstarter.annotation.AiService;
 import io.github.kabi.llama.llamaspringbootstarter.autoconfigure.LlamaProperties;
 import io.github.kabi.llama.llamaspringbootstarter.memory.ChatMemory;
-import io.github.kabi.llama.llamaspringbootstarter.model.ChatMessage;
-import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.aop.target.SimpleBeanTargetSource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -165,27 +161,27 @@ public class AiServicePostProcessor implements BeanPostProcessor, BeanFactoryPos
                 return method.invoke(this, args);
             }
             
-            // 获取方法上的@AiMethod注解
-            AiMethod aiMethod = AnnotationUtils.findAnnotation(method, AiMethod.class);
-            
-            if (aiMethod != null) {
-                // 根据注解配置构建提示词
-                String prompt = buildPrompt(aiMethod.prompt(), method, args);
+            // 获取方法上的@userMessage注解
+                UserMessage userMessage = AnnotationUtils.findAnnotation(method, UserMessage.class);
                 
-                // 确定是否使用会话记忆和RAG
-                boolean useMemory = aiMethod.useMemory() || this.enableMemory;
-                boolean useRAG = aiMethod.useRAG() || this.enableRAG;
-                String[] knowledgeBases = aiMethod.knowledgeBases();
-                
-                // 生成会话ID（如果启用记忆功能）
-                String sessionId = useMemory && chatMemory != null ? generateSessionId(method, args) : null;
-                
-                // 根据配置调用模型客户端的相应方法
-                if (modelClient != null && modelClient instanceof io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient) {
-                    io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient chatClient = 
-                        (io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient) modelClient;
+                if (userMessage != null) {
+                    // 根据注解配置构建提示词
+                    String prompt = buildPrompt(userMessage.prompt(), method, args);
                     
-                    if (aiMethod.streaming()) {
+                    // 确定是否使用会话记忆和RAG
+                    boolean useMemory = userMessage.useMemory() || this.enableMemory;
+                    boolean useRAG = userMessage.useRAG() || this.enableRAG;
+                    String[] knowledgeBases = userMessage.knowledgeBases();
+                    
+                    // 生成会话ID（如果启用记忆功能）
+                    String sessionId = useMemory && chatMemory != null ? generateSessionId(method, args) : null;
+                    
+                    // 根据配置调用模型客户端的相应方法
+                    if (modelClient != null && modelClient instanceof io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient) {
+                        io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient chatClient = 
+                            (io.github.kabi.llama.llamaspringbootstarter.client.ChatModelClient) modelClient;
+                        
+                        if (userMessage.streaming()) {
                         // 流式响应
                         if (useRAG) {
                             if (useMemory) {
